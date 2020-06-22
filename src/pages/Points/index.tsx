@@ -23,6 +23,7 @@ interface Item {
 
 const Points: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const navigation = useNavigation();
 
   const handleNavigateBack = () => {
@@ -31,6 +32,17 @@ const Points: React.FC = () => {
 
   const handleNavigateToDetail = () => {
     navigation.navigate('Detail');
+  };
+
+  const handleSelectedItem = (id: number) => {
+    const alreadySelectedItem_id = selectedItems.indexOf(id);
+
+    if (alreadySelectedItem_id >= 0) {
+      const filteredItems = selectedItems.filter((item) => item !== id);
+      setSelectedItems(filteredItems);
+    } else {
+      setSelectedItems([...selectedItems, id]);
+    }
   };
 
   useEffect(() => {
@@ -92,9 +104,12 @@ const Points: React.FC = () => {
         >
           {items?.map((item) => (
             <TouchableOpacity
-              style={styles.item}
+              style={[
+                styles.item,
+                selectedItems.includes(item.id) ? styles.selectedItem : {},
+              ]}
               activeOpacity={0.5}
-              onPress={() => {}}
+              onPress={() => handleSelectedItem(item.id)}
               key={String(item.id)}
             >
               <SvgUri uri={item.image_url} />
@@ -169,12 +184,12 @@ const styles = StyleSheet.create({
   },
 
   mapMarker: {
-    width: 90,
+    width: 80,
     height: 80,
   },
 
   mapMarkerContainer: {
-    width: 90,
+    width: 80,
     height: 70,
     backgroundColor: '#34CB79',
     flexDirection: 'column',
@@ -184,7 +199,7 @@ const styles = StyleSheet.create({
   },
 
   mapMarkerImage: {
-    width: 90,
+    width: 80,
     height: 45,
     resizeMode: 'cover',
   },
@@ -193,8 +208,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: 'Roboto_400Regular',
     color: '#FFF',
-    fontSize: 13,
-    lineHeight: 23,
+    fontSize: 11,
+    lineHeight: 20,
   },
 
   itemsContainer: {
