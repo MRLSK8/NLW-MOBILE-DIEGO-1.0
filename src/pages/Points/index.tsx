@@ -21,6 +21,10 @@ const Points: React.FC = () => {
     navigation.goBack();
   };
 
+  const handleNavigateToDetail = () => {
+    navigation.navigate('Detail');
+  };
+
   return (
     <>
       <View style={styles.container}>
@@ -44,6 +48,7 @@ const Points: React.FC = () => {
           >
             <Marker
               style={styles.mapMarker}
+              onPress={handleNavigateToDetail}
               coordinate={{
                 latitude: -8.4718959,
                 longitude: -35.7314862,
