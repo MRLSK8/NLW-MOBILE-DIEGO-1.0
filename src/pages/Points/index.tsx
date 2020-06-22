@@ -7,7 +7,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
+import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 import { SvgUri } from 'react-native-svg';
@@ -41,11 +43,25 @@ const Points: React.FC = () => {
             }}
           >
             <Marker
+              style={styles.mapMarker}
               coordinate={{
                 latitude: -8.4718959,
                 longitude: -35.7314862,
               }}
-            />
+            >
+              <View style={styles.mapMarkerContainer}>
+                <Image
+                  style={styles.mapMarkerImage}
+                  source={{
+                    uri:
+                      'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60',
+                  }}
+                />
+                <Text style={styles.mapMarkerTitle}>Mercadinho</Text>
+              </View>
+              <View style={styles.triangle} />
+              {/* <Triangle /> */}
+            </Marker>
           </MapView>
         </View>
       </View>
@@ -85,7 +101,35 @@ const Points: React.FC = () => {
   );
 };
 
+// const Triangle = styled.View`
+//   border-top-color: #34cb79;
+//   border-top-width: 10px;
+
+//   border-left-color: transparent;
+//   border-left-width: 15px;
+
+//   border-right-color: transparent;
+//   border-right-width: 15px;
+
+//   margin: -1px auto 0 auto;
+// `;
+
 const styles = StyleSheet.create({
+  triangle: {
+    borderTopColor: '#34cb79',
+    borderTopWidth: 10,
+
+    borderLeftColor: 'transparent',
+    borderLeftWidth: 15,
+
+    borderRightColor: 'transparent',
+    borderRightWidth: 15,
+
+    marginTop: -1,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+
   container: {
     flex: 1,
     paddingHorizontal: 32,
