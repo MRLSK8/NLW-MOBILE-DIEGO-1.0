@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 import { SvgUri } from 'react-native-svg';
 import api from '../../services/api';
+import * as Location from 'expo-location';
 // import styled from 'styled-components/native';
 
 interface Item {
@@ -24,6 +26,10 @@ interface Item {
 const Points: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [initialPosition, setInitialPosition] = useState<[number, number]>([
+    0,
+    0,
+  ]);
   const navigation = useNavigation();
 
   const handleNavigateBack = () => {
@@ -45,10 +51,36 @@ const Points: React.FC = () => {
     }
   };
 
+  const getItems = async () => {
+    const items = await api.get('items');
+
+    setItems(items.data);
+  };
+
+  const getLocation = async () => {
+    const { status } = await Location.requestPermissionsAsync();
+
+    if (status !== 'granted') {
+      Alert.alert(
+        'Ooops...',
+        'Precisamos de sua localização pra obter sua localização'
+      );
+      return;
+    }
+
+    const location = await Location.getCurrentPositionAsync();
+
+    const { latitude, longitude } = location.coords;
+
+    setInitialPosition([latitude, longitude]);
+  };
+
   useEffect(() => {
-    api.get('items').then((response) => {
-      setItems(response.data);
-    });
+    getItems();
+  }, []);
+
+  useEffect(() => {
+    getLocation();
   }, []);
 
   return (
@@ -63,37 +95,39 @@ const Points: React.FC = () => {
         </Text>
 
         <View style={styles.mapContainer}>
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: -8.4718959,
-              longitude: -35.7314862,
-              latitudeDelta: 0.014,
-              longitudeDelta: 0.014,
-            }}
-          >
-            <Marker
-              style={styles.mapMarker}
-              onPress={handleNavigateToDetail}
-              coordinate={{
-                latitude: -8.4718959,
-                longitude: -35.7314862,
+          {initialPosition[0] !== 0 && (
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: initialPosition[0],
+                longitude: initialPosition[1],
+                latitudeDelta: 0.014,
+                longitudeDelta: 0.014,
               }}
             >
-              <View style={styles.mapMarkerContainer}>
-                <Image
-                  style={styles.mapMarkerImage}
-                  source={{
-                    uri:
-                      'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60',
-                  }}
-                />
-                <Text style={styles.mapMarkerTitle}>Mercadinho</Text>
-              </View>
-              <View style={styles.triangle} />
-              {/* <Triangle /> */}
-            </Marker>
-          </MapView>
+              <Marker
+                style={styles.mapMarker}
+                onPress={handleNavigateToDetail}
+                coordinate={{
+                  latitude: initialPosition[0],
+                  longitude: initialPosition[1],
+                }}
+              >
+                <View style={styles.mapMarkerContainer}>
+                  <Image
+                    style={styles.mapMarkerImage}
+                    source={{
+                      uri:
+                        'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60',
+                    }}
+                  />
+                  <Text style={styles.mapMarkerTitle}>Mercadinho</Text>
+                </View>
+                <View style={styles.triangle} />
+                {/* <Triangle /> */}
+              </Marker>
+            </MapView>
+          )}
         </View>
       </View>
       <View style={styles.itemsContainer}>
