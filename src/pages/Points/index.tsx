@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Constants from 'expo-constants';
-import { Feather as Icon } from '@expo/vector-icons';
+import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
@@ -89,13 +90,14 @@ const Points: React.FC = () => {
         <TouchableOpacity onPress={handleNavigateBack}>
           <Icon name='arrow-left' color='#34cb79' size={20} />
         </TouchableOpacity>
+
         <Text style={styles.title}>Bem vindo</Text>
         <Text style={styles.description}>
           Encontre no mapa um ponto de coleta
         </Text>
 
-        <View style={styles.mapContainer}>
-          {initialPosition[0] !== 0 && (
+        {initialPosition[0] !== 0 ? (
+          <View style={styles.mapContainer}>
             <MapView
               style={styles.map}
               initialRegion={{
@@ -127,8 +129,12 @@ const Points: React.FC = () => {
                 {/* <Triangle /> */}
               </Marker>
             </MapView>
-          )}
-        </View>
+          </View>
+        ) : (
+          <View style={styles.loading}>
+            <ActivityIndicator size='large' color='#34cb79'/>
+          </View>
+        )}
       </View>
       <View style={styles.itemsContainer}>
         <ScrollView
@@ -183,6 +189,12 @@ const styles = StyleSheet.create({
     marginTop: -1,
     marginLeft: 'auto',
     marginRight: 'auto',
+  },
+
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   container: {
