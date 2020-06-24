@@ -3,6 +3,7 @@ import Constants from 'expo-constants';
 import { Feather as Icon, FontAwesome } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import api from '../../services/api';
+import * as mailComposer from 'expo-mail-composer';
 import {
   View,
   Text,
@@ -46,6 +47,13 @@ const Detail: React.FC = () => {
     setData(point.data);
   };
 
+  const handleComposeMail = () => {
+    mailComposer.composeAsync({
+      subject: 'Interesse na coleta de residuos',
+      recipients: [data.point.email],
+    });
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -83,7 +91,7 @@ const Detail: React.FC = () => {
           <Text style={styles.buttonText}>Whatsapp</Text>
         </RectButton>
 
-        <RectButton style={styles.button} onPress={() => {}}>
+        <RectButton style={styles.button} onPress={handleComposeMail}>
           <Icon name='mail' size={20} color='#FFF' />
           <Text style={styles.buttonText}>E-mail</Text>
         </RectButton>
