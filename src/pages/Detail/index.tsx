@@ -11,6 +11,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Linking,
 } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
@@ -45,6 +46,12 @@ const Detail: React.FC = () => {
   const getData = async () => {
     const point = await api.get(`points/${routeParams.point_id}`);
     setData(point.data);
+  };
+
+  const handleWhatsapp = () => {
+    Linking.openURL(
+      `whatsapp://send?phone=${data.point.whatsapp}&text=Oi, estou testando o enviou de mensagem no whatsapp...`
+    );
   };
 
   const handleComposeMail = () => {
@@ -86,7 +93,7 @@ const Detail: React.FC = () => {
         </View>
       </View>
       <View style={styles.footer}>
-        <RectButton style={styles.button} onPress={() => {}}>
+        <RectButton style={styles.button} onPress={handleWhatsapp}>
           <FontAwesome name='whatsapp' size={20} color='#FFF' />
           <Text style={styles.buttonText}>Whatsapp</Text>
         </RectButton>
