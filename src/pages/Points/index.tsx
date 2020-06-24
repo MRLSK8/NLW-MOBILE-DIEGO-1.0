@@ -88,7 +88,7 @@ const Points: React.FC = () => {
 
   const getPoints = async () => {
     const points = await api.get('points', {
-      params: { city: 'Caruaru', uf: 'PE', items: [3, 5] },
+      params: { city: 'Caruaru', uf: 'PE', items: selectedItems },
     });
 
     setPoints(points.data);
@@ -104,7 +104,7 @@ const Points: React.FC = () => {
 
   useEffect(() => {
     getPoints();
-  }, []);
+  }, [selectedItems]);
 
   return (
     <>
