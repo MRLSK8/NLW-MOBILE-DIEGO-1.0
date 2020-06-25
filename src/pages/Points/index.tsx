@@ -28,6 +28,7 @@ interface Point {
   id: number;
   name: string;
   image: string;
+  image_url: string;
   latitude: number;
   longitude: number;
 }
@@ -88,7 +89,7 @@ const Points: React.FC = () => {
 
   const getPoints = async () => {
     const points = await api.get('points', {
-      params: { city: 'Caruaru', uf: 'PE', items: selectedItems },
+      params: { city: 'Caruaru', uf: 'PE', items: [1, 2, 3] },
     });
 
     setPoints(points.data);
@@ -129,7 +130,7 @@ const Points: React.FC = () => {
                 longitudeDelta: 0.014,
               }}
             >
-              {points.map((point) => (
+              {points?.map((point) => (
                 <Marker
                   key={String(point.id)}
                   style={styles.mapMarker}
@@ -143,7 +144,7 @@ const Points: React.FC = () => {
                     <Image
                       style={styles.mapMarkerImage}
                       source={{
-                        uri: point.image,
+                        uri: point.image_url,
                       }}
                     />
                     <Text style={styles.mapMarkerTitle}>{point.name}</Text>
