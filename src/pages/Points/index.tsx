@@ -88,11 +88,16 @@ const Points: React.FC = () => {
   };
 
   const getPoints = async () => {
-    const points = await api.get('points', {
-      params: { city: 'Caruaru', uf: 'PE', items: [1, 2, 3] },
-    });
-
-    setPoints(points.data);
+    await api
+      .get('points', {
+        params: { city: 'Bonito', uf: 'PE', items: selectedItems },
+      })
+      .then((response) => {
+        setPoints(response.data.point);
+      })
+      .catch((err) => {
+        console.log('Error: ', err);
+      });
   };
 
   useEffect(() => {
@@ -130,29 +135,30 @@ const Points: React.FC = () => {
                 longitudeDelta: 0.014,
               }}
             >
-              {points?.map((point) => (
-                <Marker
-                  key={String(point.id)}
-                  style={styles.mapMarker}
-                  onPress={() => handleNavigateToDetail(point.id)}
-                  coordinate={{
-                    latitude: point.latitude,
-                    longitude: point.longitude,
-                  }}
-                >
-                  <View style={styles.mapMarkerContainer}>
-                    <Image
-                      style={styles.mapMarkerImage}
-                      source={{
-                        uri: point.image_url,
-                      }}
-                    />
-                    <Text style={styles.mapMarkerTitle}>{point.name}</Text>
-                  </View>
-                  <View style={styles.triangle} />
-                  {/* <Triangle /> */}
-                </Marker>
-              ))}
+              {points &&
+                points?.map((point) => (
+                  <Marker
+                    key={String(point.id)}
+                    style={styles.mapMarker}
+                    onPress={() => handleNavigateToDetail(point.id)}
+                    coordinate={{
+                      latitude: point.latitude,
+                      longitude: point.longitude,
+                    }}
+                  >
+                    <View style={styles.mapMarkerContainer}>
+                      <Image
+                        style={styles.mapMarkerImage}
+                        source={{
+                          uri: point.image_url,
+                        }}
+                      />
+                      <Text style={styles.mapMarkerTitle}>{point.name}</Text>
+                    </View>
+                    <View style={styles.triangle} />
+                    {/* <Triangle /> */}
+                  </Marker>
+                ))}
             </MapView>
           </View>
         ) : (
